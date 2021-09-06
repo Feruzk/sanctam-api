@@ -1,5 +1,7 @@
 <?php
 
+use App\Http\Controllers\ProductController;
+use App\Http\Controllers\AuthController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -13,7 +15,45 @@ use Illuminate\Support\Facades\Route;
 | is assigned the "api" middleware group. Enjoy building your API!
 |
 */
-Route::get('user', 'UserController@index')->name('user');
+
+
+// Route::resource('products', ProductController::class);
+
+// public
+Route::post('/register', [AuthController::class, 'register']);
+Route::post('/login', [AuthController::class, 'login']);
+Route::get('/products', [ProductController::class, 'index']);
+Route::get('/products/{id}', [ProductController::class, 'show']);
+Route::get('/products/search/{name}', [ProductController::class, 'search']);
+
+// protected
+Route::middleware(['auth:sanctum'])->group(function () {
+    Route::post('/products', [ProductController::class, 'store']);
+    Route::put('/products/search/{id}', [ProductController::class, 'update']);
+    Route::delete('/products/{id}', [ProductController::class, 'destroy']);
+    Route::post('/logout', [AuthController::class, 'logout']);
+    
+});
+// Route::group(['middleware' => ['auth:sanctum']], function () {
+//     Route::get('/products/search/{name}', [ProductController::class, 'search']);
+// });
+
+
+
+
+// Route::post('/products', function(){
+
+//     return Product::create([
+
+//         'name' => 'Product one',
+//         'slug' => 'product-one',
+//         'description' => 'This is product one',
+//         'price' => '99.99'
+
+//     ]);
+
+// });
+
 
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
